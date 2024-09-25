@@ -1,0 +1,203 @@
+<html>
+
+<head>
+  <style>
+    table,
+    th,
+    td {
+      margin: 10px 0;
+      border: solid 1px #333;
+      padding: 2px 4px;
+      font: 15px Verdana;
+    }
+    th {
+      font-weight: bold;
+    }
+    #loader {
+      border: 6px solid #f3f3f3;
+      border-radius: 50%;
+      border-top: 6px solid blue;
+      border-bottom: 6px solid blue;
+      width: 30px;
+      height: 30px;
+      -webkit-animation: spin 2s linear infinite;
+      animation: spin 2s linear infinite;
+      visibility: hidden;
+    }
+    @-webkit-keyframes spin {
+      0% {
+        -webkit-transform: rotate(0deg);
+      }
+      100% {
+        -webkit-transform: rotate(360deg);
+      }
+    }
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+	
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/v/bs5/dt-2.1.7/datatables.min.css" rel="stylesheet">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.datatables.net/v/bs5/dt-2.1.7/datatables.min.js"></script>
+
+
+  <!--script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script-->
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+
+  <script>
+  //  var script_url = "https://script.google.com/macros/s/AKfycbxbcXtZaqipwES8yIXrpCkuWwAiKMfzfFsuW54GQAX-aezqQQCaY5K_-ullmAuQSNExJg/exec";
+  // var script_url = "https://script.google.com/macros/s/AKfycbwGbWcn-JfTZqIYisE-omd8AGGQO10hp-5F9W1jMoKZiRhSu0aHtSvBEH9u77bwv456ag/exec";
+  //var script_url = "https://script.google.com/macros/s/AKfycbzdSyVCYJ57J560GXmrP_uYze_AYY5i-u3uiEzCd_PM4xsVhd-00PNMy2rHdymi0LwMLg/exec";     
+
+  //CartData2_Pivot
+  var script_url = "https://script.google.com/macros/s/AKfycbx8RmVb5iNBcW4RjfRkIbqM-cDzL2XW41GDOK-STmB9rRvyE-un9aGJMbLjafdtqOkYoQ/exec";
+
+    // Make an AJAX call to Google Script
+  
+
+    // print the returned data
+    function ctrlq(e) {
+      $("#re").html(e.result);
+      $("#re").css("visibility", "visible");
+      read_value();
+	  
+    }
+
+    function read_value() {
+      $("#re").css("visibility", "hidden");
+      document.getElementById("loader").style.visibility = "visible";
+      var url = script_url + "?action=read";
+
+      $.getJSON(url, function (json) {
+        // Set the variables from the results array
+
+        // CREATE DYNAMIC TABLE.
+        var table = document.createElement("table");
+
+        var header = table.createTHead();
+        var row = header.insertRow(0);
+        var cell1 = row.insertCell(0);
+        var cell2 = row.insertCell(1);
+		var cell3 = row.insertCell(2);
+
+        var cell4 = row.insertCell(3);
+        var cell5 = row.insertCell(4);
+		var cell6 = row.insertCell(5);
+		var cell7 = row.insertCell(6);
+
+        cell1.innerHTML = "<b>FTime</b>";
+        cell2.innerHTML = "<b>FMixName</b>";
+		cell3.innerHTML = "<b>FSumPrice的SUM</b>";
+		cell4.innerHTML = "<b>FDes</b>";
+		cell5.innerHTML = "<b>FMark1</b>";
+		cell6.innerHTML = "<b>FMark2</b>";
+		cell7.innerHTML = "<b>FMark3</b>";
+		
+        // ADD JSON DATA TO THE TABLE AS ROWS.
+       
+        for (var i = 0; i < json.records.length; i++) {
+
+          tr = table.insertRow(-1);
+          var tabCell = tr.insertCell(-1);
+          tabCell.innerHTML = json.records[i].FCutTime;
+          tabCell = tr.insertCell(-1);
+          tabCell.innerHTML = json.records[i].FMixName;
+
+          tabCell = tr.insertCell(-1);
+          tabCell.innerHTML = json.records[i].FSumPrice的SUM;
+	  
+        }
+		//Maybe here geoff
+        // FINALLY ADD THE NEWLY CREATED TABLE WITH JSON DATA TO A CONTAINER. 
+        var divContainer = document.getElementById("showData");
+        divContainer.innerHTML = "";
+        divContainer.appendChild(table);
+		
+	    document.getElementById("loader").style.visibility = "hidden";
+        $("#re").css("visibility", "visible");
+		
+		
+      });
+    }
+  </script>
+
+
+
+	<script>
+      google.script.run.withSuccessHandler(showData).getAllData();
+
+      function showData(dataArray){
+        $(document).ready(function(){
+          $('#data-table').DataTable({
+              data: dataArray,
+              columns: [
+                {"title": "ID"}, 
+                {"title": "ID2"}, 
+                {"title": "ID3"}, 
+                {"title": "ID4"}, 
+                {"title": "ID5"}, 
+				{"title": "ID6"}, 
+                {"title": "ID7"}, 
+                {"title": "ID8"}
+              ]
+          });
+        });
+      }
+    </script>
+
+
+</head>
+
+<body>
+  <div align="center">
+    <h3>Show on Google Sheet</h3>
+    <br>
+	<br>
+	
+	
+        <form>
+          ID：
+          <input type="text" name="id" id="id">
+	<br><br>	
+
+
+        </form>
+
+        <div id="loader"></div>
+
+        <p id="re"></p>
+
+        <input type="button" onclick="read_value()" value="Read" />
+       
+        <a href="https://docs.google.com/spreadsheets/d/1E/edit?usp=sharing"
+          target="_blank">Click here-NoUse </a>
+        <div id="showData"></div>
+	
+		
+  </div>
+ 
+ <h2>container2 ... </h2>
+ 
+   <div class="container">
+      <br>
+      <div class="row">
+        <table id="data-table" class="table table-striped table-sm table-hover table-bordered">
+        </table>
+      </div>
+    </div>
+
+ 
+  <h2> Show End... </h2>
+</body>
+<html>
