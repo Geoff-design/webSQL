@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <head>
  
     <title>Shopping Cart</title>
@@ -21,7 +20,7 @@
         <nav class ="navbar navbar-expand-lg navbar-light">
             <div class="container-fluid">
                 <!-- Brand logo -->
-                <a class="navbar-brand" href="#"><img width="50px" height="50px" src="image/Jecalogo.png"></a>
+                <a class="navbar-brand" href="#"><img width="50px" height="50px" src="image/Jecalogo.png"> Jeca 餐廳 </a>
 
                 <!-- 11, mobile version -->
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#linkbar">
@@ -53,7 +52,159 @@
 
             </div>
         </nav>
-  </body>
+  
+        <div class="jumbotron text-center" >
+            <h2>Jaca 餐廳菜單 </h2>
+          </div>
+        
+          <table id="menu-table" class="text-center" align="center">
+            <thead>
+              <tr>
+                <th>編號</th>
+                <th>菜單</th>
+                <th>價格</th>
+                <th>加入?</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        
+           <BR>
+            <div class="jumbotron text-center" >
+             <h2>購物車：</h2>
+             </div>
+        
+        
+          <table id="cart-table"  class="text-center"  align="center">
+            <thead>
+              <tr>
+                <th>菜單</th>
+                <th>價格</th>
+                <th>數量</th>
+                <th>刪除?</th>
+              </tr>
+            </thead>
+            <tbody id="cart-body"></tbody>
+          </table>
+          <div id="total" style="font-weight: bold; margin-top: 6px;"  align="center"></div>
+          <br>
+        
+            <div class="jumbotron text-center" >
+             <button id="clear-button" class="btn btn-warning" > 清除購物車 </button>
+             <th> _____ </th>
+             <button id="save-button" class="btn btn-success" > 送出訂單 !! </button>
+             <br>
+             <hr>
+              
+             <a href="https://geoff-design.github.io/webSQL/ShowPivot.html" target="_blank">查看總報表 </a>
+             
+        
+            </div>
+           
+        
+          <script>
+            let cart = [];
+        
+            $(document).ready(function() {
+              // Load menu items from Google Sheets
+              google.script.run.withSuccessHandler(renderMenu).getMenuItems();
+        
+              $('#save-button').click(function() {
+                saveToGoogleSheet();
+              });
+        
+              $('#clear-button').click(function() {
+                clearCart();
+              });      
+        
+        
+        
+            });
+        
+            function renderMenu(menuItems) {
+              const tbody = $('#menu-table tbody');
+              menuItems.forEach(item => {
+                tbody.append(`<tr>
+                  <td>${item.id}</td>
+                  <td>${item.name}</td>
+                  <td>${item.price}</td>
+                  <td><button onclick='addToCart(${JSON.stringify(item)})'>加一份</button></td>
+                </tr>`);
+              });
+            }
+        
+            function addToCart(item) {
+              const existingItem = cart.find(i => i.name === item.name);
+              if (existingItem) {
+                existingItem.quantity++;
+              } else {
+                cart.push({ id: item.id, name: item.name, price: item.price, quantity: 1 });
+               }
+            //////   ok 
+            
+            //  const existingItem = cart.find(i => i.id === item.id);
+            //  if (existingItem) {
+            //    existingItem.quantity++;
+            //  } else {
+            //    item.quantity = 1;
+            //    cart.push(item);
+            //  }
+        
+              renderCart();
+            }
+        
+            function removeFromCart(name) {
+              cart = cart.filter(item => item.name !== name);
+              renderCart();
+            }
+        
+            function renderCart() {
+              const tbody = $('#cart-body');
+              tbody.empty();
+              let total = 0;
+        
+              cart.forEach(item => {
+                tbody.append(`<tr>
+                  <td>${item.name}</td>
+                  <td>${item.price}</td>
+                  <td>${item.quantity}</td>
+                  <td><button onclick='removeFromCart("${item.name}")'>刪除</button></td>
+                </tr>`);
+                total += item.price * item.quantity;
+              });
+        
+              $('#total').text(`總價 :  $${total.toFixed(0)}`);
+            }
+        
+                //清除購物車
+                function clearCart() {
+                    // var cart = document.getElementById("cart");
+                    cart = [];
+                    total = 0;
+        
+                    renderCart();
+                }
+        
+        
+        
+        
+            function saveToGoogleSheet() {
+              google.script.run.withSuccessHandler(() => {
+                alert('Your cart has been saved successfully!');
+              }).saveCart(cart);
+            }
+           
+            $('#save-button').click(function() {
+              google.script.run.withSuccessHandler(() => {
+                alert('餐點為您準備中 !!');
+              }).saveToSheet(cart);
+            });
+        
+          </script>
+
+
+  
+    </body>
 
 
 
