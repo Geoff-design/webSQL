@@ -29,3 +29,9 @@ li a:hover{
     }
 }
 */
+
+footer{
+    height:30px;
+    background-color: indigo;
+    color: white;
+}
