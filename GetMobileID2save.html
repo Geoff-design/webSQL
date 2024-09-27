@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>獲取 IP 地址及手機型號</title>
+</head>
+<body>
+    <h1>獲取 IP 地址及裝置型號</h1>
+    <p id="ip-address">正在獲取 IP 地址...</p>
+    <p id="device-model">手機型號: 正在獲取...</p>
+
+    <p id="device-model2">手機型號: 正在獲取2...</p>
+
+ 
+    <script>
+        // 獲取 IP 地址的函式
+        async function getIPAddress() {
+            try {
+                const response = await fetch('https://api.ipify.org?format=json');
+                const data = await response.json();
+                return data.ip;
+            } catch (error) {
+                console.error('無法獲取 IP 地址:', error);
+                return '無法獲取 IP 地址';
+            }
+        }
+
+        // 獲取裝置型號
+        function getDeviceModel() {
+            return navigator.userAgent;
+        }
+
+        function getDeviceModel2() {
+            const userAgent = navigator.userAgent;
+
+            if (/android/i.test(userAgent)) {
+                const match = userAgent.match(/Android\s([\d\.]+);\s([^\s;]+)/);
+                return match ? match[2] : "未知的 Android 裝置";
+            } else if (/iPhone/i.test(userAgent)) {
+                const match = userAgent.match(/iPhone.*OS\s([\d\_]+)/);
+                return match ? `iPhone ${match[1].replace(/_/g, '.')}` : "未知的 iPhone";
+            } else if (/iPad/i.test(userAgent)) {
+                const match = userAgent.match(/iPad.*OS\s([\d\_]+)/);
+                return match ? `iPad ${match[1].replace(/_/g, '.')}` : "未知的 iPad";
+            } else if (/windows phone/i.test(userAgent)) {
+                const match = userAgent.match(/Windows Phone\s([\d\.]+)/);
+                return match ? `Windows Phone ${match[1]}` : "未知的 Windows Phone";
+            } else {
+                return "未知裝置";
+            }
+        }
+
+
+
+        // 當前頁面載入時執行
+        window.onload = async () => {
+            const ip = await getIPAddress();
+            document.getElementById('ip-address').textContent = "IP 地址: " + ip;
+            localStorage.setItem('deviceIp', ip);
+
+            const model = getDeviceModel();
+            document.getElementById('device-model').textContent = "手機型號: " + model;
+            localStorage.setItem('deviceModel', model);
+
+            const model2 = getDeviceModel2();
+            document.getElementById('device-model2').textContent = "手機型號2: " + model2;            
+            localStorage.setItem('deviceModel2', model2);
+        };
+    </script>
+</body>
+</html>
