@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>獲取手機型號</title>
+</head>
+<body>
+    <h1>獲取手機型號</h1>
+    <p id="device-model">正在獲取裝置型號...</p>
+
+    <script>
+        function getDeviceModel() {
+            const userAgent = navigator.userAgent;
+
+            if (/android/i.test(userAgent)) {
+                const match = userAgent.match(/Android\s([\d\.]+);\s([^\s;]+)/);
+                return match ? match[2] : "未知的 Android 裝置";
+            } else if (/iPhone/i.test(userAgent)) {
+                const match = userAgent.match(/iPhone.*OS\s([\d\_]+)/);
+                return match ? `iPhone ${match[1].replace(/_/g, '.')}` : "未知的 iPhone";
+            } else if (/iPad/i.test(userAgent)) {
+                const match = userAgent.match(/iPad.*OS\s([\d\_]+)/);
+                return match ? `iPad ${match[1].replace(/_/g, '.')}` : "未知的 iPad";
+            } else if (/windows phone/i.test(userAgent)) {
+                const match = userAgent.match(/Windows Phone\s([\d\.]+)/);
+                return match ? `Windows Phone ${match[1]}` : "未知的 Windows Phone";
+            } else {
+                return "未知裝置";
+            }
+        }
+
+        const deviceModel = getDeviceModel();
+        document.getElementById('device-model').textContent = "裝置型號: " + deviceModel;
+    </script>
+</body>
+</html>
